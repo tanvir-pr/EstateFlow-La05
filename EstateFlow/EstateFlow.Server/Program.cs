@@ -1,3 +1,4 @@
+using EstateFlow.Application;
 using EstateFlow.Infrastructure.Data;
 using EstateFlow.Server.Services;
 using FluentValidation;
@@ -18,6 +19,10 @@ builder.Services.AddOpenApi(options =>
 
 builder.Services.AddDbContext<EstateFlowDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("EstateFlowDbConnection")));
+
+// Classes requesting the interface get the same scoped DbContext instance
+builder.Services.AddScoped<IApplicationDbContext>(provider =>
+    provider.GetRequiredService<EstateFlowDbContext>());
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
